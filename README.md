@@ -8,6 +8,7 @@ INSTALL
 ================================
 
   $ cd RAILS_ROOT/lib
+
   $ git clone git@github.com:kanechika7/r8.git
 
   $ config/application.rb
