@@ -1,0 +1,172 @@
+# 基本概念
+・ルール化して開発速度を上げる
+  - 誰が見てもすぐに理解できる
+  - KPIは新案件がどれだけ早く開発できるか
+
+------------------------------------------------------------------------
+models
+------------------------------------------------------------------------
+・下記を一遍にincludeするmodule作成
+  include R8::Model
+
+
+/models
+  |- item.rb
+  |- /item
+    |- klass.rb      # クラスメソッド
+    |- structure.rb  # 構造
+    |- feature.rb    # 特徴
+    |- output.rb     # 吐き出し（ as_json ）
+    |- scope.rb      # 絞り込み（ scope ）
+    |- aktion.rb     # DB更新
+    |- call_back.rb  # 更新時アクション
+
+    |- vendor.rb     # 外部モジュール
+    |- /vendor
+
+    |- original.rb   # 内部モジュール
+    |- /original
+
+
+・研究
+
+  scope
+    index_scope # 一覧取得する
+
+・Memo
+  - よく使うscopeは動的に定義
+
+
+------------------------------------------------------------------------
+workers
+------------------------------------------------------------------------
+・バックグラウンド処理は呼び出しているファイルに記述する
+・呼び出すメソッド名 ***********_by_resque
+・ByResque モジュールの作成（上記をメタプログラミング）
+
+
+
+・メタプログラミング
+
+  include R8::ByResque
+  by_resques [:create_or_add_author_and_publisher,
+              *,*,*]
+
+  # -> create_or_add_author_and_publisher_by_resque が作成され下記を呼び出す
+
+  def create_or_add_author_and_publisher
+  end
+
+
+・研究
+  - 著者と出版社の追加を裏側で行おうと思った
+
+  # bgで処理させるように指示するメソッド
+  def create_or_add_author_and_publisher_by_resque
+    Resque.enqueue(CreateOrAddAuthorAndPublisher,id)
+  end
+
+  # 作成メソッド
+  def create_or_add_author_and_publisher
+  end
+
+
+class CreateOrAddAuthorAndPublisher < ResqueWorker
+  @queue = :create_or_and_author_and_publisher_server
+
+  def self.perform book_id
+    Book.find(book_id).create_or_add_author_and_publisher
+  end
+end
+
+
+
+
+------------------------------------------------------------------------
+controllers
+------------------------------------------------------------------------
+・strutを仕様
+  strut_controller Item
+
+
+------------------------------------------------------------------------
+views
+------------------------------------------------------------------------
+# メインテンプレート
+/views
+  |- /items
+    |- index
+    |- show
+    |- new
+    |- edit
+    |- _form
+
+    |- /parts
+
+
+# 部分テンプレートルール
+/views
+  |- /parts
+    |- _header
+    |- _footer
+    |- _left
+    |- _right
+
+    |- /common
+      |- _good／good.js
+
+      |- _read_action／read_action.js
+      |- _google_analytics
+      |- _inform
+      |- _social_plugins
+      |- _tags
+
+    |- /popup
+    |- /seo
+    |- /side
+    |- /social
+
+
+# サイト内で別サイトとして区切る場合
+/views/admin
+/views/matome
+
+  |- /parts
+  |- /common
+  |- /seo
+  |- /side
+  |- /social
+
+
+------------------------------------------------------------------------
+js & css
+------------------------------------------------------------------------
+/javascripts
+  |- application.js
+
+  |- /pages
+  |- /vendor
+
+
+・洗い出し
+  - 使っているシーンを洗い出す
+    → ページgotoni → pages
+    → 意味ごと → 
+
+------------------------------------------------------------------------
+css
+------------------------------------------------------------------------
+/stylesheets
+  |- application.css
+
+  |- /pages
+  |- /vendor
+
+
+
+
+
+------------------------------------------------------------------------
+i18n
+------------------------------------------------------------------------
+

@@ -1,0 +1,50 @@
+
+views
+=======================================
+
+# メインテンプレート
+/views
+  |- /items
+    |- index
+    |- show
+    |- new
+    |- edit
+    |- _form
+
+    |- /parts
+
+
+# 部分テンプレートルール
+/views
+  |- /parts
+    |- _header
+    |- _footer
+    |- _left
+    |- _right
+
+    |- /common
+      |- _good／good.js
+
+      |- _read_action／read_action.js
+      |- _google_analytics
+      |- _inform
+      |- _social_plugins
+      |- _tags
+
+    |- /popup
+    |- /seo
+    |- /side
+    |- /social
+
+
+# サイト内で別サイトとして区切る場合
+/views/admin
+/views/matome
+
+  |- /parts
+  |- /common
+  |- /seo
+  |- /side
+  |- /social
+
+
