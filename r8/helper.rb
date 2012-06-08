@@ -39,5 +39,28 @@ module R8
       link_to body, url, html_options
     end
 
+
+    # I18n views
+    def vt key, options = {}
+      prefix = self.view_renderer.lookup_context.prefixes[0]
+      return I18n.t(["views", prefix.gsub("/", "."), key].join("."), options)
+    end
+
+    # I18n breadcrumb list
+    def bcl *args
+      bcl = []
+      args.each do |arg|
+        if arg.is_a?(Hash)
+          arg.each_pair do |key,value|
+            bcl.push(link_to I18n.t("path.#{key}_#{value.join("_")}"), send("#{key}_path", value))
+          end
+        else
+          bcl.push(link_to I18n.t("path.#{arg}"), send("#{arg}_path"))
+        end
+      end
+      return bcl.join("/")
+    end
+
+
   end
 end
