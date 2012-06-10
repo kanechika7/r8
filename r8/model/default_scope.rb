@@ -6,18 +6,33 @@ module R8
     module DefaultScope
       extend ActiveSupport::Concern
       included do
-      
-        # Order
-        # @PATERN
-        #  - created_at, updated_at
-        # @HOWTO
-        #   - od_******: order desc
-        #   - oa_******: order asc
-        [:created_at,:updated_at].each do |o|
-          scope "od_#{o}" ,order_by([o,:desc])
-          scope "oa_#{o}" ,order_by([o,:asc ])
-        end
+ 
+        self.fields.each_pair do |k,v|
 
+          # _flg filter
+          # @PATTERN
+          #   - ***_flg
+          # @HOWTO
+          #   - t_***_flg: ***_flg is true
+          #   - f_***_flg: ***_flg is false
+          if k.to_s=~/_flg$/
+            scope "t_#{k}" ,where(k=>true)
+            scope "f_#{k}" ,where(k=>false)
+          end
+
+          # _at order
+          # @PATTERN
+          #  - ***_at
+          # @HOWTO
+          #   - od_******: order desc
+          #   - oa_******: order asc
+          if k.to_s=~/_at$/
+            scope "od_#{k}" ,order_by([k,:desc])
+            scope "oa_#{k}" ,order_by([k,:asc ])
+          end
+
+        end
+     
       end
 
       module ClassMethods
