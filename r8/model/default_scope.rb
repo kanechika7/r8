@@ -21,13 +21,13 @@ module R8
           end
 
 
-          # _position or _at order
+          # _position or _at or _count order
           # @PATTERN
-          #  - ***_position or ***_at
+          #  - ***_position or ***_at or ***_count
           # @HOWTO
           #   - od_******: order desc
           #   - oa_******: order asc
-          if k.to_s=~/_(position|at)$/
+          if k.to_s=~/_(position|at|count)$/
             scope "od_#{k}" ,order_by([k,:desc])
             scope "oa_#{k}" ,order_by([k,:asc ])
           end
