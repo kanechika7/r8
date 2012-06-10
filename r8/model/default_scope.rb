@@ -20,16 +20,18 @@ module R8
             scope "f_#{k}" ,where(k=>false)
           end
 
-          # _at order
+
+          # _position or _at order
           # @PATTERN
-          #  - ***_at
+          #  - ***_position or ***_at
           # @HOWTO
           #   - od_******: order desc
           #   - oa_******: order asc
-          if k.to_s=~/_at$/
+          if k.to_s=~/_(position|at)$/
             scope "od_#{k}" ,order_by([k,:desc])
             scope "oa_#{k}" ,order_by([k,:asc ])
           end
+
 
         end
      
