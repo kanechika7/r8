@@ -3,8 +3,8 @@
 # How To
 #
 # 1. Setting
-# $ vim app/controllers/application_controller.rb
-# class ApplicationController
+# $ vim app/helpers/application_helper.rb
+# class ApplicationHelper
 #   include R8::Helper
 #
 module R8
