@@ -1,9 +1,10 @@
 # coding: UTF-8
 #
 # インスタンスメソッドをバックグラウンド処理させる
+#
 # 
-# - How To -
-# □ SETTING
+# SETTING
+#
 #  class Item 
 #    include R8::Model::ByResque
 #    by_resques [:abc]
@@ -15,7 +16,9 @@
 #
 #  end
 #
-# □ HOW TO
+#
+# HOW TO
+#
 #  # resque server start
 #  $ QUEUE=* VVERBOSE=true be rake environment resque:work
 #
@@ -25,6 +28,7 @@
 #    -> Hello abc!
 #  $ obj.abc_by_resque
 #    -> Hello abc!（バックグラウンド）
+#
 #
 
 module R8

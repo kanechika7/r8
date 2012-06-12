@@ -1,6 +1,17 @@
 # coding: UTF-8
+#
+# よく使うScope を定義
+#
+# SETTING
+#
+#   $ vim app/models/item/scope.rb
+#
+#   class Item
+#     module Scope
+#       include R8::Model::DefaultScope
+#
+#
 
-# よく使うScope
 module R8
   module Model
     module DefaultScope

@@ -2,16 +2,17 @@
 #
 # リレーションがあるオブジェクトのattributesを_（アンダー）で取得する
 # 
-# - How To -
-# □ SETTING
+# SETTING
+#
 #  class Item 
 #    include R8::Model::UnderRelation
 #    under_relations({ abc: Abc })
 #
-#  end
 # 
-# □ USE
+# USE
+#
 #   $ item.abc_name
+#
 #
 module R8
   module Model
