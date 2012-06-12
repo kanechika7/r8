@@ -1,12 +1,15 @@
 # coding: UTF-8
 #
-# How To
 #
-# 1. Setting
-# $ vim app/helpers/application_helper.rb
-# class ApplicationHelper
-#   include R8::Helper
+# SETTING
 #
+#   $ vim app/helpers/application_helper.rb
+#
+#   class ApplicationHelper
+#     include R8::Helper
+#
+#
+
 module R8
   module Helper
 
