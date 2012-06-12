@@ -62,5 +62,57 @@ module R8
     end
 
 
+    ###########################################################
+    # seo i18n helper
+    ###########################################################
+
+    #
+    # USE
+    #   $ vim locales/ja/seo.yml
+    #
+    #   ja:
+    #     seo:
+    #       %controller_name:
+    #         %action_name:
+    #           title:
+    #           description:
+    #           keywords:
+    #           h1:
+    # 
+    #
+    #   $ vim app/views/layouts/application.html.haml
+    #
+    #   %title= seo_title
+    #   %meta{ name: "description" ,content: seo_description }
+    #   %meta{ meta: "keywords"    ,content: seo_keywords    }
+    #
+    #   %h1= seo_h1
+    #
+    #
+    # EXTRA
+    #   変数を使う場合
+    #   $ vim app/controllers/******_controller.rb
+    # 
+    #   @i18n_opts = { book_name: @book.name }
+    #
+    #
+    
+    def seo_title
+      I18n.t("seo.#{params[:controller]}.#{params[:action]}.title",@i18n_opts)
+    end
+
+    def seo_description
+      I18n.t("seo.#{params[:controller]}.#{params[:action]}.description",@i18n_opts)
+    end
+
+    def seo_keywords
+      I18n.t("seo.#{params[:controller]}.#{params[:action]}.keywords",@i18n_opts)
+    end
+
+    def seo_h1
+      I18n.t("meta.#{params[:controller]}.#{params[:action]}.h1",@i18n_opts)
+    end
+
+
   end
 end
