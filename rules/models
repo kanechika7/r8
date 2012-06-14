@@ -22,3 +22,44 @@ models
     |- original.rb   # 内部モジュール
     |- /original
 
+
+STRUCTURE
+------------------------------------------------
+
+  ***_flg      : true or false
+  ***_position : N - 順番
+  ***_at       : Datetime - 日時
+  ***_count    : N - 数値
+  ***_point    : N - 数値
+  ***_pv       : N - 数値
+
+
+
+SCOPE
+------------------------------------------------
+
+□ filter
+
+  @HOWTO
+    - fil_******: 
+
+
+□ _flg filter
+
+  @PATTERN
+    - ***_flg
+  @HOWTO
+    - t_***_flg: ***_flg is true
+    - f_***_flg: ***_flg is false
+
+
+□ _position or _at or _count or _point or _pv order
+
+  @PATTERN
+    - ***_position or ***_at or ***_count or ***_point or ***_pv
+  @HOWTO
+    - od_******: order desc
+    - oa_******: order asc
+
+
+

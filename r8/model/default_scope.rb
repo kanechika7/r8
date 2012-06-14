@@ -38,7 +38,7 @@ module R8
           # @HOWTO
           #   - od_******: order desc
           #   - oa_******: order asc
-          if k.to_s=~/_(position|at|count)$/
+          if k.to_s=~/_(position|at|count|point|pv)$/
             scope "od_#{k}" ,order_by([k,:desc])
             scope "oa_#{k}" ,order_by([k,:asc ])
           end
