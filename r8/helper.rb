@@ -113,7 +113,7 @@ module R8
     end
 
     def seo_h1
-      I18n.t("meta.#{params[:controller]}.#{params[:action]}.h1",@i18n_opts)
+      I18n.t("seo.#{params[:controller]}.#{params[:action]}.h1",@i18n_opts)
     end
 
 
