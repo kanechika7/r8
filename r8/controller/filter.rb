@@ -8,7 +8,7 @@ module R8
         # before_filter
         class_eval do
           before_filter :index_i18n ,only: actions.find_names(:index)
-          before_filter :show_i18n  .only: actions.find_names(:show)
+          before_filter :show_i18n  ,only: actions.find_names(:show)
         end
       end
 
