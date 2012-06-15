@@ -2,15 +2,10 @@
 # 
 # SETTING
 #
-# $ vim app/controllers/applications_controller.rb
-# class ApplicationsController
-#   include Strut::Controller
-#   include R8::Controller
-#
 # $ vim app/controllers/items_controller.rb
 # class ItemsController
 #   strut_controller Item
-#   r8_controller Item
+#   include R8::Controller
 #
 #   # @i18n_opts
 #   def index_i18n
@@ -24,18 +19,23 @@ module R8
   module Controller
     extend ActiveSupport::Concern
 
-    module ClassMethods
-      include R8::Controller::Filter
-      def r8_controller clazz, options={}
-        table_name = clazz.to_s.tableize.gsub("/","_")
-        file_name = clazz.to_s.underscore.gsub("/","_")
-        actions = R8::Model::Holder.new options
-
-        # define_before_filter
-        i18n_controller_filter clazz, table_name, file_name, actions
-        
-      end
+    included do 
+      before_filter :index_i18n ,only: [:index]
+      before_filter :show_i18n  ,only: [:show]
     end
+
+    module InstanceMethods
+
+      # i18n
+      def index_i18n
+        @i18n_opts = {}
+      end
+      def show_i18n
+        @i18n_opts = {}
+      end
+
+    end
+
 
   end
 end
