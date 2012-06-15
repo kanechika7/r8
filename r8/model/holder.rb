@@ -1,4 +1,4 @@
-# coding: UTF-(
+# coding: UTF-8
 module R8
   module Model
     # Holder is action array model
