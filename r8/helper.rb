@@ -47,20 +47,28 @@ module R8
     end
 
     # I18n breadcrumb list
-    def bcl *args
-      bcl = []
-      args.each do |arg|
-        if arg.is_a?(Hash)
-          arg.each_pair do |key,value|
-            bcl.push(link_to I18n.t("path.#{key}_#{value.join("_")}"), send("#{key}_path", value))
-          end
-        else
-          bcl.push(link_to I18n.t("path.#{arg}"), send("#{arg}_path"))
-        end
-      end
-      return bcl.join("/")
+    def bc_link_to path, options = {}
+      label = options[:label]||I18n.t("path.#{path}")
+      return link_to label, path
     end
-
+    # View
+    # =raw bcl [ :root, :seach, { path: search_path(k: @keyword), label: vt("search.path", k: @keyword) } ], s: "/"
+    # @params list
+    # @params options
+    def bcl list, options = {}
+      bcl = []
+      list.each do |e| 
+        if e.is_a?(Hash)
+          path  = e[:path]
+          label = e[:label]||I18n.t("path.#{path}", default: path)
+          bcl.push(link_to label, path)
+        else
+          bcl.push(bc_link_to e)
+        end 
+      end 
+      sepalator = options[:sepalator]||options[:s]||"&gt;"
+      return bcl.join(sepalator)
+    end 
 
   end
 end
