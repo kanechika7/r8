@@ -23,6 +23,16 @@ INSTALL
 SETTING
 ================================
 
+HELPER
+--------------------------------
+
+  $ vim app/helpers/application_helper.rb
+
+    class ApplicationHelper
+      include R8::Helper
+
+
+
 MODEL
 --------------------------------
 

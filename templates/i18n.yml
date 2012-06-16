@@ -1,0 +1,33 @@
+# 
+# SETTING
+#   $ vim app/helper/application_helper.rb
+#
+#   module ApplicationHelper
+#     include R8::Helper
+#
+# USE
+# 
+#   $ vim app/views/layouts/application.html.haml
+#
+#   %title= sns_title
+#   %meta{ name: "description" ,content: sns_description }
+#   %meta{ meta: "keywords"    ,content: sns_keywords    }
+#
+#   %h1= sns_h1
+#
+# EXTRA
+#   変数を使う場合
+#   $ vim app/controllers/******_controller.rb
+# 
+#   @i18n_opts = { book_name: @book.name }
+#
+# ja:
+#   sns:
+#     %controller_name:
+#       %action_name:
+#         title:
+#         description:
+#         keywords:
+#         h1:
+#
+    
