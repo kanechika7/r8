@@ -1,5 +1,57 @@
 controllers
-===================================
-・strutを仕様
-  strut_controller Item
+======================================================================================
+
+######################################################################################
+# strutライブラリを使用
+######################################################################################
+
+# EXPLAIN
+
+  絞り込み部分と吐き出し部分のみを記載するようにして、コード量を減少させる + 見やすくする
+
+
+# SETTING
+
+  class ItemsController < ApplicationController
+    strut_controller Item
+
+
+# HOW TO
+
+  https://github.com/kuruma-gs/strut
+
+
+
+######################################################################################
+# i18nで使う定数を一元管理するようにするモジュール
+######################################################################################
+
+# SETTING & HOW TO
+
+  class ItemsController < ApplicationController
+
+    include R8::Controller
+
+    def index_i18n
+      @i18n_opts = { items_name: "AAAAAAAAAAAAAAAAAAA" }
+    end
+
+    def show_i18n
+      @i18n_opts = { item_name: "AAAAAAAAAAAAAAAAAAA" }
+    end
+
+
+  # i18nファイル の設定
+
+    ja:
+      seo:
+        items:
+          index:
+            title: "%{items_name}"
+          show:
+            title: "%{item_name}"
+
+
+
+
 

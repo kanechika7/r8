@@ -1,0 +1,44 @@
+helpers
+======================================================================================
+
+######################################################################################
+# view関連で共通して使うメソッドを定義するモジュール
+######################################################################################
+
+# SETTING
+
+  class ApplicationHelper
+    include R8::Helper
+
+
+# HOW TO - active_link_to -
+
+# HOW TO - vt（I18n views） -
+
+# HOW TO - bc_link_to（I18n breadcrumb list） -
+
+# HOW TO - bcl -
+
+  =raw bcl [ :root, :seach, { path: search_path(k: @keyword), label: vt("search.path", k: @keyword) } ], s: "/"
+
+
+# HOW TO - seo i18n helper -
+
+  $ vim locales/ja/seo.yml
+
+    ja:
+      seo:
+        %controller_name%:
+          %action_name%:
+            title:
+            description:
+            keywords
+            h1:
+
+  $ vim app/views/layouts/applicaton.html.haml
+
+    %title= seo_title
+    %meta{ name: "description" ,content: seo_description }  
+    %meta{ name: "keywords"    ,content: seo_keywords }
+
+    %h1= seo_h1

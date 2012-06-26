@@ -1,30 +1,45 @@
-
 models
-================================================
-・下記を一遍にincludeするmodule作成
-  include R8::Model
+======================================================================================
+
+DIRECTORY
+--------------------------------------------------------------------------------------
+
+######################################################################################
+# ディレクトリ分けモジュール
+######################################################################################
+
+# SETTING
+
+  class Item
+    include R8::Model
 
 
-/models
-  |- item.rb
-  |- /item
-    |- klass.rb      # クラスメソッド
-    |- structure.rb  # 構造
-    |- feature.rb    # 特徴
-    |- output.rb     # 吐き出し（ as_json ）
-    |- scope.rb      # 絞り込み（ scope ）
-    |- aktion.rb     # DB更新
-    |- call_back.rb  # 更新時アクション
+# HOW TO
 
-    |- vendor.rb     # 外部モジュール
-    |- /vendor
+  /models
+    |- item.rb
+    |- /item
+      |- klass.rb      # クラスメソッド
+      |- structure.rb  # 構造
+      |- feature.rb    # 特徴
+      |- output.rb     # 吐き出し（ as_json ）
+      |- scope.rb      # 絞り込み（ scope ）
+      |- aktion.rb     # DB更新
+      |- call_back.rb  # 更新時アクション
 
-    |- original.rb   # 内部モジュール
-    |- /original
+      |- vendor.rb     # 外部モジュール
+      |- /vendor
+
+      |- original.rb   # 内部モジュール
+      |- /original
 
 
 STRUCTURE
-------------------------------------------------
+--------------------------------------------------------------------------------------
+
+######################################################################################
+# field名 命名規則
+######################################################################################
 
   ***_flg      : true or false
   ***_position : N - 順番
@@ -36,35 +51,150 @@ STRUCTURE
 
 
 SCOPE
-------------------------------------------------
+--------------------------------------------------------------------------------------
 
-□ filter
+######################################################################################
+# scope名 命名規則
+######################################################################################
 
-  @HOWTO
-    - fil_******: 
-
-□ includes
-
-  @HOWTO
-    - ins_******: includes(******)
-
-
-□ _flg filter
-
-  @PATTERN
-    - ***_flg
-  @HOWTO
-    - t_***_flg: ***_flg is true
-    - f_***_flg: ***_flg is false
+  記号の説明
+    @PATTERN : どんなときに使うか（fiele名など）
+    @HOWTO   : どのように使うか（命名規則など）
+    @FEATURE : 考えておくべき事項
 
 
-□ _position or _at or _count or _point or _pv order
+  □ filter
 
-  @PATTERN
-    - ***_position or ***_at or ***_count or ***_point or ***_pv
-  @HOWTO
-    - od_******: order desc
-    - oa_******: order asc
+    @PATTERN
+      - キーワード検索など
+    @HOWTO
+      - fil_******: 
+
+    @FEATURE
+      - 共通項目を見つけたらDefaultScope化する（下記参照）
+
+
+  □ includes
+
+    @PATTERN
+      - eager_loadingを定義する場合
+    @HOWTO
+      - ins_******: includes(******)
+
+    @FEATURE
+      - 命名規則を決めて has_many など定義されているものがあれば、自動的に定義するようにしたい
+        （DefaultScope化）
+
+
+######################################################################################
+# デフォルトで定義できるモジュール
+######################################################################################
+
+# SETTING
+
+  class Item
+    module Scope
+      include R8::Model::DefaultScope
+
+
+# HOW TO
+
+  以下のfield名の場合に自動的にscopeが定義されます
+
+  □ _flg filter
+
+    @PATTERN
+      - ***_flg
+    @HOWTO
+      - t_***_flg: ***_flg is true
+      - f_***_flg: ***_flg is false
+
+
+  □ _position or _at or _count or _point or _pv order
+
+    @PATTERN
+      - ***_position or ***_at or ***_count or ***_point or ***_pv
+    @HOWTO
+      - od_******: order desc
+      - oa_******: order asc
+
+
+    
+
+OTHER
+--------------------------------------------------------------------------------------
+
+######################################################################################
+# 簡易タグを定義できるモジュール
+######################################################################################
+
+# SETTING
+
+  class Item
+
+    include R8::Model::Taggable
+    setting_tags [:area_tags]
+
+
+# HOW TO
+
+  rails> item           = Item.new
+  rails> item.area_tags = "AA,BB"
+  rails> item.area_tags_array             # => ["AA","BB"]
+  rails> item.save
+
+  rails> Item.area_tags                   # => ["AA","BB"]
+  rails> Item.area_tagged_with("AA").size # => 1
+
+
+######################################################################################
+# リレーションがあるオブジェクトのattributesを_（アンダー）で取得できるモジュール
+######################################################################################
+
+# SETTING
+
+  class Item
+
+    belongs_to :user
+
+    include R8::Model::UnderRelation
+    under_relations({ user: User })
+
+
+# HOW TO
+
+  rails> item.user_name        # => item.user.name
+  rails> item.user_description # => item.user.description
+
+
+######################################################################################
+# インスタンスメソッドをバックグラウンドで処理させるモジュール
+######################################################################################
+
+# SETTING
+
+  class Item
+    include R8::Model::ByResque
+    by_resques [:abc]
+
+    # 『Hello abc!』と log/resque.log に記述するメソッド
+    def abc
+      path = File.expand_path("log/resque.log", Rails.root)
+      File.open(path, 'a'){|f| f.puts "Hello abc!" }
+    end
+
+
+# HOW TO
+
+  # resque server start
+
+  $ QUEUE=* VVERBOSE=true be rake environment resque:work
+
+  # rails サイド
+
+  rails> item = Item.find(:id)
+  rails> item.abc               # -> Hello abc!
+  rails> item.abc_by_resque     # -> Hello abc!（バックグラウンド）
 
 
 
