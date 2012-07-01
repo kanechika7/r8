@@ -28,9 +28,12 @@ controllers
 
 # SETTING & HOW TO
 
-  class ItemsController < ApplicationController
+  class ApplicationController < ActionController::Base
 
     include R8::Controller
+
+
+  class ItemsController < ApplicationController
 
     def index_i18n
       @i18n_opts = { items_name: "AAAAAAAAAAAAAAAAAAA" }
@@ -52,6 +55,22 @@ controllers
             title: "%{item_name}"
 
 
+
+######################################################################################
+# params[:item_id] -> @item を取得
+######################################################################################
+
+# SETTING & HOW TO
+
+  class ApplicationController < ActionController::Base
+
+    include R8::Controller
+    set_obj [:user,:book]
+
+
+  class ItemsController < ApplicationController
+
+    before_filter :set_user
 
 
 

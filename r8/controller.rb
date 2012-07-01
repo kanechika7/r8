@@ -24,6 +24,19 @@ module R8
       before_filter :show_i18n  ,only: [:show]
     end
 
+    module ClassMethods
+
+      # params[:item_id] => @item
+      def set_obj names
+        names.each do |name|
+          define_method "set_#{name}" do
+            instance_variable_set("@#{name}",name.classify.constantize.find(params["#{name}_id".to_sym]))
+          end
+        end
+      end
+
+    end
+
     module InstanceMethods
 
       # i18n
