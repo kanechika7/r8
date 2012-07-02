@@ -22,7 +22,7 @@ module R8
         def single_valid_message field
           return "" if errors.empty? or errors[field].empty?
           unsco_clazz = self.class.to_s.underscore
-          messages = errors[field].map{|msg| content_tag(:li, I18n.t("activerecord.attributes.#{unsco_clazz}.#{field}")) }.uniq.join
+          messages = errors[field].map{|msg| "<li>"+I18n.t("activerecord.attributes.#{unsco_clazz}.#{field}")+"</li>" }.uniq.join
           html = <<-HTML
             <div class='error_explanation'>
               <ul>#{messages}</ul>
