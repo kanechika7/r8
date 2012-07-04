@@ -119,7 +119,53 @@ SCOPE
       - oa_******: order asc
 
 
-    
+
+SCOPE 組み合わせ
+--------------------------------------------------------------------------------------
+
+######################################################################################
+# 【PENDING】Controllerとの組み合わせ
+######################################################################################
+
+# items#index の場合
+
+  class ItemsController < ApplicationController
+
+    def find_index
+      @items = Item.index_scope(params)
+      # @items = Item.index_scope(current_user,params)
+    end
+
+  class Item
+    module Scope
+
+    module ClassMethods
+
+      def index_scope pms
+        ...
+      end
+
+
+
+# admin/items#index の場合
+
+  class Admin
+    class ItemsController < Admin
+
+      def find_index
+        @items = Item.admin_index_scope(params)
+        #@items = Item.admin_index_scope(current_user,params)
+
+  class Item
+    module Scope
+
+    module ClassMethods
+
+      def admin_index_scope pms
+        ...
+      end
+
+
 
 OTHER
 --------------------------------------------------------------------------------------
