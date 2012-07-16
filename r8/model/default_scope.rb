@@ -43,9 +43,8 @@ module R8
             scope "oa_#{k}" ,order_by([k,:asc ])
           end
 
-
         end
-     
+    
       end
 
       module ClassMethods
