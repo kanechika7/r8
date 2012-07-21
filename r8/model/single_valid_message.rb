@@ -17,7 +17,7 @@ module R8
     module SingleValidMessage
       extend ActiveSupport::Concern
 
-      module InstanceMethods
+      #module InstanceMethods
 
         def single_valid_message field
           return "" if errors.empty? or errors[field].empty?
@@ -31,7 +31,7 @@ module R8
           html.html_safe
         end 
 
-      end
+      #end
 
     end
   end
