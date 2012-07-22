@@ -13,4 +13,6 @@ module R8
   require File.join(File.dirname(__FILE__), 'r8/model/by_resque')
   require File.join(File.dirname(__FILE__), 'r8/model/taggable')
 
+  # workers
+  require File.join(File.dirname(__FILE__), 'r8/workers/resque_worker')
 end

@@ -50,7 +50,7 @@ module R8
   end
 end
 
-class ByResqueServer
+class ByResqueServer < ResqueWorker
   @queue = :by_resque_server
 
   def self.perform klass_name,id,method_name
