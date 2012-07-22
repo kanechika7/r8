@@ -40,7 +40,7 @@ module R8
         def by_resques ms
           ms.each do |m|
             define_method "#{m}_by_resque" do
-              Resque.enqueue(ByResqueServer,self.class.to_s,id,m)
+              Resque.enqueue(::ByResqueServer,self.class.to_s,id,m)
             end
           end
         end
