@@ -31,6 +31,7 @@
 #
 #
 
+require File.join(File.dirname(__FILE__),'../workers/resque_worker.rb')
 module R8
   module Model
     module ByResque
