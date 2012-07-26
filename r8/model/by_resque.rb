@@ -40,8 +40,8 @@ module R8
 
         def by_resques ms
           ms.each do |m|
-            define_method "#{m}_by_resque" do |opts|
-              Resque.enqueue(::ResqueWorker::ByResqueServer,self.class.to_s,id,m,opts)
+            define_method "#{m}_by_resque" do |*args|
+              Resque.enqueue(::ResqueWorker::ByResqueServer,self.class.to_s,id,m,args)
             end
           end
         end
@@ -54,9 +54,9 @@ end
 class ByResqueServer < ResqueWorker
   @queue = :by_resque_server
 
-  def self.perform klass_name,id,method_name,opts
+  def self.perform klass_name,id,method_name,args
     obj = klass_name.constantize.find(id)
-    obj.send(method_name,opts)
+    obj.send(method_name,args)
   end
 end
 
