@@ -124,6 +124,9 @@ module R8
       I18n.t("seo.#{params[:controller]}.#{params[:action]}.h1",@i18n_opts)
     end
 
+    def seo_footer
+      I18n.t("seo.#{params[:controller]}.#{params[:action]}.footer",@i18n_opts)
+    end
 
   end
 end
