@@ -55,7 +55,7 @@ module R8
       return link_to label, path
     end
     # View
-    # =raw bcl [ :root, :seach, { path: search_path(k: @keyword), label: vt("search.path", k: @keyword) } ], s: "/"
+    # = bcl [ :root, :seach, { path: search_path(k: @keyword), label: vt("search.path", k: @keyword) } ], s: "/"
     # @params list
     # @params options
     def bcl list, options = {}
@@ -70,7 +70,7 @@ module R8
         end 
       end 
       sepalator = options[:sepalator]||options[:s]||"&gt;"
-      return bcl.join(sepalator)
+      return bcl.join(sepalator).html_safe
     end 
 
     ###########################################################
