@@ -15,17 +15,27 @@
 module R8
   module Model
     module DefaultScope
+      extend ActiveSupport::Concern
 
-      # ActiveRecord
-      ActiveSupport.on_load(:active_record) do
-        require 'r8/model/default_scope/active_record_scope'
-        include R8::Model::DefaultScope::ActiveRecordScope
-      end
+      included do
 
-      # Mondoid
-      if defined? ::Mongoid
-        require 'r8/model/default_scope/mongoid_scope'
-        include R8::Model::DefaultScope::MongoidScope
+        kls = parent
+
+        # ActiveRecord
+        if defined? ::ActiveRecord
+          if kls.ancestors.include? ::ActiveRecord::Base
+            require 'r8/model/default_scope/active_record_scope'
+            include R8::Model::DefaultScope::ActiveRecordScope
+          end
+        end
+
+        # Mondoid
+        if defined? ::Mongoid
+          if kls.ancestors.include? ::Mongoid::Document
+            require 'r8/model/default_scope/mongoid_scope'
+            include R8::Model::DefaultScope::MongoidScope
+          end
+        end
       end
 
       module ClassMethods
