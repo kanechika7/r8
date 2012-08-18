@@ -19,13 +19,13 @@ module R8
       # ActiveRecord
       ActiveSupport.on_load(:active_record) do
         require 'r8/model/default_scope/active_record_scope'
-        include R7::Model::DefaultScope::ActiveRecordScope
+        include R8::Model::DefaultScope::ActiveRecordScope
       end
 
       # Mondoid
       if defined? ::Mongoid
         require 'r8/model/default_scope/mongoid_scope'
-        include R7::Model::DefaultScope::MongoidScope
+        include R8::Model::DefaultScope::MongoidScope
       end
 
       module ClassMethods
