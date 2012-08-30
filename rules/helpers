@@ -36,9 +36,30 @@ helpers
             h1:
 
   $ vim app/views/layouts/applicaton.html.haml
+    #=> views/parts/_seo にまとめる
 
     %title= seo_title
     %meta{ name: "description" ,content: seo_description }  
     %meta{ name: "keywords"    ,content: seo_keywords }
 
     %h1= seo_h1
+
+# HOW TO - ogp i18n helper -
+
+  $ vim locales/ja/ogp.yml
+
+    - title       : og:title
+    - description : og:description
+    - url         : og:url
+    - image       : og:image
+
+    ja:
+      ogp:
+        %controller_name%:
+          %action_name%:
+            title: "AAAAAAAAAAAAAAAAAAAA"
+            description: "AAAAAAAAAAAAAAAAAAA"
+            url: "http://***********"
+            image: "http://*********.jpg"
+
+

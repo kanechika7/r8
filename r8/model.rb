@@ -40,6 +40,7 @@ module R8
       include "#{klass_name}::CallBack".constantize  if exist?("call_back.rb")
       include "#{klass_name}::Vendor".constantize    if exist?("vendor.rb")
       include "#{klass_name}::Original".constantize  if exist?("original.rb")
+      include "#{klass_name}::Workers".constantize   if exist?("workers.rb")
     end
 
     module ClassMethods

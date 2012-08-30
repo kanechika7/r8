@@ -56,3 +56,70 @@ views
     |- /social
 
 
+######################################################################################
+# レイアウトテンプレート使い方
+######################################################################################
+# HOW TO
+・メインテンプレートで設定できるようにしておく
+
+# SETTING
+  doctype html
+  html
+    head
+
+      = render 'parts/seo'
+      = render 'parts/ogp' if @ogp_flg # メインテンプレートで設定
+
+      // CSS
+      = stylesheet_link_tag "application"
+      = content_for :css
+
+      // ga
+      = render '/parts/ga'
+
+    body id="#{@body_id}" class="#{@body_class}"
+
+      #wrapper
+        = render '/parts/header'
+
+        #container
+          #container-inner
+            = content_for :main
+
+        = render '/parts/footer'
+
+      = javascript_include_tag "application"
+      = content_for :js
+
+
+######################################################################################
+# メインテンプレート使い方
+######################################################################################
+# HOW TO
+・レイアウトテンプレートにある変数を指定していく
+
+# SETTING
+// SETTING
+ruby:
+  # 変数の設定をします
+
+// ADD CSS
+- content_for :css do
+  # outer css
+  link href ="*******.css"
+  # inner css
+  css:
+    // CSS 記載
+
+// ADD JS
+  // outer js
+  script src="********.js"
+  // inner js
+  javascript:
+    // JS 記載
+
+// MAIN
+- content_for :main do
+  // メインファイル記載
+
+

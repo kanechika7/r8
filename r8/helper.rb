@@ -128,5 +128,61 @@ module R8
       I18n.t("seo.#{params[:controller]}.#{params[:action]}.footer",@i18n_opts)
     end
 
+    ###########################################################
+    # ogp i18n helper
+    ###########################################################
+
+    # HOW TO
+    #
+    #   $ vim locales/ja/ogp.yml
+    #   
+    #     - title       : og:title
+    #     - description : og:description
+    #     - url         : og:url
+    #     - image       : og:image
+    #
+    #     ja:
+    #       ogp:
+    #
+    #         # DEFAULT
+    #         title: 
+    #         description:
+    #         url:
+    #         image:
+    #
+    #         # PAGES
+    #         %controller_name%:
+    #           %action_name%:
+    #             title: "AAAAAAAAAAAAAAAAAAAA"
+    #             description: "AAAAAAAAAAAAAAAAAAA"
+    #             url: "http://***********"
+    #             image: "http://*********.jpg"
+    #
+    #   $ vim app/views/parts/_ogp.html.slim
+    #
+    #     meta content=ogp_title property="og:title"
+    #     meta content="album" property="og:type"
+    #     meta content=ogp_description property="og:description"
+    #     meta content=ogp_url property="og:url"
+    #     meta content=ogp_image property="og:image"
+    #     meta content="sokuTile" property="og:site_name"
+    #
+
+    def ogp_title
+      I18n.t("ogp.#{params[:controller]}.#{params[:action]}.title",(@i18n_opts||{}).merge({ default: I18n.t("ogp.title") }) )
+    end
+
+    def ogp_description
+      I18n.t("ogp.#{params[:controller]}.#{params[:action]}.description",(@i18n_opts||{}).merge({ default: I18n.t("ogp.description") }) )
+    end
+
+    def ogp_url
+      I18n.t("ogp.#{params[:controller]}.#{params[:action]}.url",(@i18n_opts||{}).merge({ default: I18n.t("ogp.url") }) )
+    end
+
+    def ogp_image
+      I18n.t("ogp.#{params[:controller]}.#{params[:action]}.image",(@i18n_opts||{}).merge({default: I18n.t("ogp.image")}) )
+    end
+
   end
 end

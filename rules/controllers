@@ -74,3 +74,159 @@ controllers
 
 
 
+######################################################################################
+# API 仕様
+######################################################################################
+
+# HOW TO（基本ルール）
+・GET ./api/v1/items.json 、GET ./api/v1/items/:id.json
+
+  PARAMS
+    基本
+      o   : 並び替え             | ex. 'od_created_at' or 'oa_created_at'
+      in  : 関連取得             | ex. 'users' or 'users,photos'
+      mes : DB上にない情報の取得 | ex. 'user_name,photo_name'
+      p   : ページ数
+      pp  : 取得数
+
+    絞り込み条件
+      ceq_:field  : 指定する情報のみにする | ex. ceq_album_id=1 => album_id=1 のもののみの取得
+      ceq_se      : 期間指定               | ex. '2012-05-01~2012-05-31' or '2012-05'
+      cneq_:field : 指定する情報を除外する | ex. cneq_ids=1,2,3 => idが1,2,3は除く
+
+# SETTING
+
+## app/controllers/api/v1/items_controller
+class Api
+  class V1
+    class ItemsController < V1
+
+      # index
+      def find_index
+        # default parameters
+        params.reverse_merge!({
+          # デフォルトで指定するパラメータを記載
+        })
+        @items = Item.index_scope(current_user,params)
+      end
+      def index
+        respond_index(@items,{
+          t_json: Proc.new{ render Item.index_to_json(@items,params) }
+        })
+      end
+
+      # show
+      def find_one
+        params.reverse_merge!({
+          # デフォルトで指定するパラメータ記載
+        })
+        @item = Item.show_scope(current_user,params).first
+      end
+      def show
+        respond_show(@item,{
+          t_json: Proc.new{ render Item.show_to_json(@item,params) }
+        })
+      end
+
+
+## app/models/item/scope.rb
+class Item
+  module Scope
+    extend ActiveSupport::Concern    
+
+    included do
+      # 絞り込み条件系
+      scope :condition_scope ,lambda { |pms|
+        os = scoped
+        # pmsごとの処理
+        ## ceq_ 系
+        pms.each_pair do |k,v|
+          case k.to_s
+          # ceq_se （期間指定）の場合
+          when 'ceq_se'
+            # 期間指定処理
+            vs = v.split('~')
+            case vs.size
+            when 2
+              os = os.where(:taked_at.gte => vs[0]) if vs[0]!='0'
+              os = os.where(:taked_at.lte => vs[1]) if vs[1]!='0'
+            when 1
+              os = os.where(:taked_at.gte => vs[0]).where(:taked_at.lte => vs[0])
+            end
+          when /^ceq\_(.*)/
+            os = os.where($1=>v)
+          when 'cneq_ids'
+            os = os.not_in(:_id=>v.split(','))
+          end
+        end
+        return os
+      }
+
+      # インクルード系
+      # パラメータ → includes
+      scope :includes_scope ,lambda { |pms|
+        os = scoped
+        pms.each_pair do |k,v|
+          case k.to_s
+          when 'in'
+            os = os.includes(v.split(',')) unless v.blank?
+          end
+        end
+        return os
+      }
+
+      # オーダー系
+      # パラメータ -> order
+      scope :order_scope ,lambda { |pms|
+        os = scoped
+        pms.each_pair do |k,v|
+          case k.to_s
+          when 'o'
+            os = os.send(v.to_sym) unless v.blank?
+          end
+        end
+        return os
+      }
+
+    end
+
+    module ClassMethods
+
+      def index_scope u,pms
+        os = u.items
+        os = os.condition_scope(pms)
+        os = os.includes_scope(pms)
+        os = os.order_scope(pms)
+        os = os.page(pms[:p]).per(pms[:pp])
+        return os
+      end
+
+      def show_scope u,pms
+      end
+
+      def index_to_json objs,pms
+        # setting
+        opts = { :api => 'v1' }
+        opts[:methods] = pms[:mes].split(',') unless pms[:mes].blank?
+        opts[:includes] = pms[:in].split(',') unless pms[:in].blank?
+
+        # 取得
+        json = objs.as_json(opts)
+
+        return { :json => {
+                    # data
+                    :data  => json,
+                    # 基本情報
+                    :o     => pms[:o],
+                    :in    => pms[:in],
+                    :mes   => pms[:mes],
+                    :p     => pms[:p].to_i,
+                    :pp    => pms[:pp].to_i,
+                    :lp    => objs.total_pages,
+                    :total => objs.total_count } }
+      end
+
+    end
+
+
+
