@@ -8,7 +8,7 @@ module R8
         extend ActiveSupport::Concern
         included do
 
-          kls = parent
+          kls = self #parent
    
           kls.attribute_names.each do |k|
 

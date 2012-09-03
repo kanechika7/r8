@@ -19,7 +19,7 @@ module R8
 
       included do
 
-        kls = parent
+        kls = self #parent
 
         # ActiveRecord
         if defined? ::ActiveRecord

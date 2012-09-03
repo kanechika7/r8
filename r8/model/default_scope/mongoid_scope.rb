@@ -8,7 +8,7 @@ module R8
 
         included do
    
-          kls = parent
+          kls = self #parent
 
           kls.fields.each_pair do |k,v|
 
