@@ -12,7 +12,6 @@
 
 module R8
   module Helper
-
     
     def active_link_to(body, url, html_options = {}, active_options = { :class => :on })
       # Default Definitions
@@ -93,7 +92,10 @@ module R8
     #           description:
     #           keywords:
     #           h1:
-    # 
+    #       _default:
+    #         title: "個別設定が見つからない場合のタイトル"
+    #         description: "個別設定が見つからない場合のディスクリプション"
+    #         keywords: "個別設定が見つからない場合のキーワード"
     #
     #   $ vim app/views/layouts/application.html.haml
     #
@@ -111,27 +113,12 @@ module R8
     #   @i18n_opts = { book_name: @book.name }
     #
     #
+    [:title, :description, :keywords, :h1, :footer].each do |name|
+      define_method "seo_#{name}" do
+        I18n.t(name, build_i18n_options(:seo, name, @i18n_opts))
+      end
+    end
     
-    def seo_title
-      I18n.t("seo.#{params[:controller]}.#{params[:action]}.title",@i18n_opts)
-    end
-
-    def seo_description
-      I18n.t("seo.#{params[:controller]}.#{params[:action]}.description",@i18n_opts)
-    end
-
-    def seo_keywords
-      I18n.t("seo.#{params[:controller]}.#{params[:action]}.keywords",@i18n_opts)
-    end
-
-    def seo_h1
-      I18n.t("seo.#{params[:controller]}.#{params[:action]}.h1",@i18n_opts)
-    end
-
-    def seo_footer
-      I18n.t("seo.#{params[:controller]}.#{params[:action]}.footer",@i18n_opts)
-    end
-
     ###########################################################
     # ogp i18n helper
     ###########################################################
@@ -171,7 +158,6 @@ module R8
     #     meta content=ogp_image property="og:image"
     #     meta content="sokuTile" property="og:site_name"
     #
-
     def ogp_title
       I18n.t("ogp.#{params[:controller]}.#{params[:action]}.title",(@i18n_opts||{}).merge({ default: I18n.t("ogp.title") }) )
     end
@@ -186,6 +172,15 @@ module R8
 
     def ogp_image
       I18n.t("ogp.#{params[:controller]}.#{params[:action]}.image",(@i18n_opts||{}).merge({default: I18n.t("ogp.image")}) )
+    end
+
+    private
+    # Construct options of the I18n.translate
+    def build_i18n_options type, key, options = {}
+      options ||= {}
+      options[:scope] = [type, params[:controller].to_sym, params[:action].to_sym]
+      options[:default] = I18n.t("seo.#{key}", default: '') 
+      return options
     end
 
   end
