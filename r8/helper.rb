@@ -44,9 +44,13 @@ module R8
 
 
     # I18n views
+    #  :scope => [:views, :xxx, :xxx]
+    #  :default => ''
     def vt key, options = {}
       prefix = self.view_renderer.lookup_context.prefixes[0]
-      return I18n.t(["views", prefix.gsub("/", "."), key].join("."), options)
+      options[:scope] = [:views].concat(prefix.split('.').map{|x| x.to_sym })
+      options[:default] = '' unless options.key?(:default)
+      return I18n.t key, options
     end
 
     # I18n breadcrumb list
