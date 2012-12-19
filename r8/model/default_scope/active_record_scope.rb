@@ -30,10 +30,10 @@ module R8
             # @HOWTO
             #   - od_******: order desc
             #   - oa_******: order asc
-            if k.to_s=~/_(position|at|count|point|pv)$/
+            #if k.to_s=~/_(position|at|count|point|pv)$/
               kls.scope "od_#{k}" ,order: "#{k} DESC"
               kls.scope "oa_#{k}" ,order: "#{k} ASC"
-            end
+            #end
 
           end
       
