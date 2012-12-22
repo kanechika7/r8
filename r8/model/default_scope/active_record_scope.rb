@@ -1,6 +1,4 @@
 # coding: UTF-8
-#
-
 module R8
   module Model
     module DefaultScope
@@ -33,7 +31,11 @@ module R8
 
           end
 
-          # 絞り込み条件
+          # condition
+          # @PARAMS:
+          #   ceq_<field>  ： equal（ field == :val ）
+          #   cmc_<field>  ： match（ field =~ :val ）
+          #   cneq_<fields>：not equal（ field != :val ）
           kls.scope :condition_scope ,->(pms){
             os = scoped
             pms.each_pair do |k,v|
@@ -49,7 +51,9 @@ module R8
             return os
           }
 
-          # オーダー系
+          # order
+          # @PARAMS:
+          #   o：od_<field> or oa_<field>
           kls.scope :order_scope ,lambda { |pms|
             os = scoped
             pms.each_pair do |k,v|
@@ -65,30 +69,57 @@ module R8
 
         module ClassMethods
 
+          # for API methods
+          # @HOWTO:
+          #
+          #   class Api
+          #     class V1::ItemsController < V1
+          #
+          #       def find_index
+          #         params.reverse_merge!({
+          #           :o   => 'od_created_at',
+          #         　:in  => '',
+          #         　:mes => '',
+          #         　:p   => 1,
+          #         　:pp  => 10 })
+          #         # get datas
+          #         @items = Item.api_records(params)
+          #       end
+          #
+          #       def index
+          #         respond_index(@items,{
+          #           t_json: Proc.new( render json: Item.api_records_to_json(@items,params) )
+          #         })
+          #       end
+          #
+
+          # get records for api
           def api_records pms
             os = scoped
-            os = os.condition_scope(pms)          # 絞り込み条件系
-            os = os.order_scope(pms)              # オーダー系
-            return os.page(pms[:p]).per(pms[:pp]) # ページネーション
+            os = os.condition_scope(pms)          # conditions
+            os = os.order_scope(pms)              # orders
+            return os.page(pms[:p]).per(pms[:pp]) # pagination
           end
 
+          # records to json for api
           def api_records_to_json objs, pms
             # setting
             opts = { :api => 'v1' }
             opts[:methods] = pms[:mes].split(',') unless pms[:mes].blank?
             opts[:includes] = pms[:in].split(',') unless pms[:in].blank?
-            # 取得
+            # get
             json = objs.as_json(opts)
             return { # data
                      :data  => json,
-                     # 基本情報
-                     :o     => pms[:o],
-                     :in    => pms[:in],
-                     :mes   => pms[:mes],
-                     :p     => pms[:p].to_i,
-                     :pp    => pms[:pp].to_i,
-                     :lp    => objs.total_pages,
-                     :total => objs.total_count }
+                     # base information
+                     :o     => pms[:o],          # order
+                     :in    => pms[:in],         # includes
+                     :mes   => pms[:mes],        # methods
+                     :p     => pms[:p].to_i,     # page
+                     :pp    => pms[:pp].to_i,    # per_page
+                     :lp    => objs.total_pages, # total pages
+                     :total => objs.total_count  # total count
+                   }
           end
 
         end
