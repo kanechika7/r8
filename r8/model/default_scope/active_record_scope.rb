@@ -42,8 +42,8 @@ module R8
                 os = os.where(arel_table[$1.to_sym].matches("%#{v}%")) unless v.blank?
               when /^ceq\_(.*)/
                 os = os.where($1=>v) unless v.blank?
-              when 'cneq_ids'
-                os = os.where("#{kls.table_name}.id not in (?)",v.split(',')) unless v.blank?
+              when /^cneq\_(.*)/
+                os = os.where("#{kls.table_name}.#{$1.singularize} not in (?)",v.split(',')) unless v.blank?
               end
             end
             return os
