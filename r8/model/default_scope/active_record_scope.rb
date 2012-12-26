@@ -8,6 +8,7 @@ module R8
 
           kls = self #parent
    
+          # fields scope
           kls.attribute_names.each do |k|
 
             # _flg filter
@@ -31,6 +32,11 @@ module R8
 
           end
 
+          # relations scope
+          kls.reflections.each_pair do |k,v|
+            kls.scope "ins_#{k}",include: k
+          end
+
           # condition
           # @PARAMS:
           #   ceq_<field>  ： equal（ field == :val ）
@@ -51,10 +57,26 @@ module R8
             return os
           }
 
+          # include
+          # @PARAMS:
+          #   in：<relation>,<relation>,<relation>
+          kls.scope :in_scope ,->(pms){
+            os = scoped
+            pms.each_pair do |k,v|
+              case k.to_s
+              when 'in'
+                unless v.blank?
+                  v.split(",").each{|rel| os = os.send("ins_#{rel}".to_s) }
+                end
+              end
+            end
+            return os
+          }
+
           # order
           # @PARAMS:
           #   o：od_<field> or oa_<field>
-          kls.scope :order_scope ,lambda { |pms|
+          kls.scope :order_scope ,->(pms){
             os = scoped
             pms.each_pair do |k,v|
               case k.to_s
@@ -97,6 +119,7 @@ module R8
           def api_records pms
             os = scoped
             os = os.condition_scope(pms)          # conditions
+            os = os.in_scope(pms)                 # includes
             os = os.order_scope(pms)              # orders
             return os.page(pms[:p]).per(pms[:pp]) # pagination
           end
