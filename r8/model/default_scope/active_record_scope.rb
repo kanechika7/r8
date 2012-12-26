@@ -39,9 +39,11 @@ module R8
 
           # condition
           # @PARAMS:
-          #   ceq_<field>  ： equal（ field == :val ）
-          #   cmc_<field>  ： match（ field =~ :val ）
-          #   cneq_<fields>：not equal（ field != :val ）
+          #   ceq_<field>  ：equal field     （ field == :val ）
+          #   ceq_<fields> ：equal fields    （ field in (:val) ）
+          #   cmc_<field>  ：match field     （ field =~ :val ）
+          #   cneq_<field> ：not equal field （ field != :val ）
+          #   cneq_<fields>：not equal fields（ field not in (:val) ）
           kls.scope :condition_scope ,->(pms){
             os = scoped
             pms.each_pair do |k,v|
@@ -49,9 +51,23 @@ module R8
               when /^cmc\_(.*)/
                 os = os.where(arel_table[$1.to_sym].matches("%#{v}%")) unless v.blank?
               when /^ceq\_(.*)/
-                os = os.where($1=>v) unless v.blank?
+                unless v.blank?
+                  plu = $1.pluralize
+                  if plu==$1
+                    os = os.where("#{kls.table_name}.#{$1.singularize} in (?)",v.split(','))
+                  else
+                    os = os.where($1=>v)
+                  end
+                end
               when /^cneq\_(.*)/
-                os = os.where("#{kls.table_name}.#{$1.singularize} not in (?)",v.split(',')) unless v.blank?
+                unless v.blank?
+                  plu = $1.pluralize
+                  if plu==$1
+                    os = os.where("#{kls.table_name}.#{$1.singularize} not in (?)",v.split(','))
+                  else
+                    os = os.where("#{kls.table_name}.#{$1} != ?",v)
+                  end
+                end
               end
             end
             return os
