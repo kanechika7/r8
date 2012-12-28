@@ -113,7 +113,9 @@ module R8
           #   class Api
           #     class V1::ItemsController < V1
           #
+          #       # GET ./items.json
           #       def find_index
+          #         # default setting
           #         params.reverse_merge!({
           #           :o   => 'od_created_at',
           #         　:in  => '',
@@ -127,6 +129,23 @@ module R8
           #       def index
           #         respond_index(@items,{
           #           t_json: Proc.new( render json: Item.api_records_to_json(@items,params) )
+          #         })
+          #       end
+          #
+          #
+          #       # GET ./item/:id.json
+          #       def find_one
+          #         # default parameters
+          #         params.reverse_merge!({
+          #           :in  => '',
+          #           :mes => '' })
+          #         # get data
+          #         @item = Item.api_record(params).first
+          #       end
+          #
+          #       def show
+          #         respond_show(@item,{
+          #           t_json: Proc.new{ render json: Item.api_record_to_json(@item,params) }
           #         })
           #       end
           #
@@ -159,6 +178,25 @@ module R8
                      :lp    => objs.total_pages, # total pages
                      :total => objs.total_count  # total count
                    }
+          end
+
+          # get record for api
+          def api_record pms
+            os = scoped
+            os = os.where(id: pms[:id])
+            os = os.in_scope(pms)         # includes系
+            return os
+          end
+
+          # record to json for api
+          def api_record_to_json obj, pms
+            # setting
+            opts = { :api => 'v1' }
+            opts[:methods] = pms[:mes].split(',') unless pms[:mes].blank?
+            opts[:includes] = pms[:in].split(',') unless pms[:in].blank?
+            # 取得
+            json = obj.as_json(opts)
+            return json 
           end
 
         end
