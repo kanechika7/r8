@@ -164,7 +164,7 @@ module R8
             # setting
             opts = { :api => 'v1' }
             opts[:methods] = pms[:mes].split(',') unless pms[:mes].blank?
-            opts[:includes] = pms[:in].split(',') unless pms[:in].blank?
+            opts[:include] = pms[:in].split(',') unless pms[:in].blank?
             # get
             json = objs.as_json(opts)
             return { # data
@@ -193,7 +193,7 @@ module R8
             # setting
             opts = { :api => 'v1' }
             opts[:methods] = pms[:mes].split(',') unless pms[:mes].blank?
-            opts[:includes] = pms[:in].split(',') unless pms[:in].blank?
+            opts[:include] = pms[:in].split(',') unless pms[:in].blank?
             # 取得
             json = obj.as_json(opts)
             return json 
