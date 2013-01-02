@@ -44,6 +44,10 @@ module R8
           #   cmc_<field>  ：match field     （ field =~ :val ）
           #   cneq_<field> ：not equal field （ field != :val ）
           #   cneq_<fields>：not equal fields（ field not in (:val) ）
+          #   lte_<field>  ：less than equal field   （ field <= :val ）
+          #   lt_<field>   ：less than field         （ field < :val ）
+          #   gte_<field>  ：grater than equal field （ field >= :val ）
+          #   gt_<field>   ：grater than field       （ field > :val ）
           kls.scope :condition_scope ,->(pms){
             os = scoped
             pms.each_pair do |k,v|
@@ -68,7 +72,16 @@ module R8
                     os = os.where("#{kls.table_name}.#{$1} != ?",v)
                   end
                 end
+              when /^lte\_(.*)/
+                os = os.where("#{kls.table_name}.#{$1} <= ?",v) unless v.blank?
+              when /^lt\_(.*)/
+                os = os.where("#{kls.table_name}.#{$1} < ?",v) unless v.blank?
+              when /^gte\_(.*)/
+                os = os.where("#{kls.table_name}.#{$1} >= ?",v) unless v.blank?
+              when /^gt\_(.*)/
+                os = os.where("#{kls.table_name}.#{$1} > ?",v) unless v.blank?
               end
+
             end
             return os
           }
