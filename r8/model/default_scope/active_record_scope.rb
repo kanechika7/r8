@@ -27,8 +27,8 @@ module R8
             # @HOWTO
             #   - od_<field>: order desc
             #   - os_<field>: order desc
-            kls.scope "od_#{k}" ,order: "#{k} DESC"
-            kls.scope "oa_#{k}" ,order: "#{k} ASC"
+            kls.scope "od_#{k}" ,order: "#{kls.table_name}.#{k} DESC"
+            kls.scope "oa_#{k}" ,order: "#{kls.table_name}.#{k} ASC"
 
           end
 
@@ -48,6 +48,7 @@ module R8
           #   lt_<field>   ：less than field         （ field < :val ）
           #   gte_<field>  ：grater than equal field （ field >= :val ）
           #   gt_<field>   ：grater than field       （ field > :val ）
+          #   in_ceq_<table>-<field>：equal table.field （ table.field == :val required includes table ）
           kls.scope :condition_scope ,->(pms){
             os = scoped
             pms.each_pair do |k,v|
@@ -60,7 +61,7 @@ module R8
                   if plu==$1
                     os = os.where("#{kls.table_name}.#{$1.singularize} in (?)",v.split(','))
                   else
-                    os = os.where($1=>v)
+                    os = os.where("#{kls.table_name}.#{$1}"=>v)
                   end
                 end
               when /^cneq\_(.*)/
@@ -80,6 +81,11 @@ module R8
                 os = os.where("#{kls.table_name}.#{$1} >= ?",v) unless v.blank?
               when /^gt\_(.*)/
                 os = os.where("#{kls.table_name}.#{$1} > ?",v) unless v.blank?
+
+              when /^in\_ceq\_(.*)\-(.*)/
+                unless v.blank?
+                  os = os.where("#{$1}.#{$2}"=>v)
+                end
               end
 
             end
