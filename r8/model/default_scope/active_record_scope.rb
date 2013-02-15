@@ -84,7 +84,12 @@ module R8
 
               when /^in\_ceq\_(.*)\-(.*)/
                 unless v.blank?
-                  os = os.where("#{$1}.#{$2}"=>v)
+                  case v
+                  when 'nil'
+                    os = os.where("#{$1}.#{$2}"=>nil)
+                  else
+                    os = os.where("#{$1}.#{$2}"=>v)
+                  end
                 end
               end
 
